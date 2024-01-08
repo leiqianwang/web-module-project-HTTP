@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const EditMovieForm = (props) => {
+  const { id } = useParams(); // Extract the id from URL This id is then used to make API calls to fetch and update the movie.
   const navigate = useNavigate();
 
   const { setMovies } = props;
@@ -16,6 +17,17 @@ const EditMovieForm = (props) => {
     description: ""
   });
 
+  useEffect(() => {
+     axios.get("http://localhost:9000/api/movies/${id}")
+     .then(res => {
+      setMovie(res.data);
+     })
+     .catch(err => {
+      console.error(err);
+     });
+  },[id]);
+  
+
   const handleChange = (e) => {
     setMovie({
       ...movie,
@@ -26,8 +38,17 @@ const EditMovieForm = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Make your put request here
-    // On success, set the updated movies in state
+    axios.put("http://localhost:9000/api/movies/:id", movie)  //update global movie state
+    .then(res => {
+     
+      // On success, set the updated movies in state
     // and also navigate the app to the updated movie path
+      setMovie(prevMovie => prevMovie.map(m => m.id === id ? res.data : m));
+      navigate(`/movies/${id}`);
+    })
+    .catch(err => console.error(err));
+    
+
   }
 
   const { title, director, genre, metascore, description } = movie;
