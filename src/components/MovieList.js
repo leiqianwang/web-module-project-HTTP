@@ -1,4 +1,5 @@
 import React from 'react';
+import AddMovieForm from './AddMovieForm';
 
 import MovieListItem from './MovieListItem';
 import MovieFooter from './MovieFooter';
